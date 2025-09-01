@@ -13,6 +13,8 @@ class Category extends Model implements HasMedia
     
     protected $fillable = ['name', 'slug', 'parent_id', 'description', 'is_visible', 'is_home', 'is_popular', 'is_menu', 'is_special'];
 
+    protected $appends = ['image_link'];
+    
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
@@ -31,5 +33,10 @@ class Category extends Model implements HasMedia
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_categories', 'category_id', 'product_id');
+    }
+
+    public function getImageLinkAttribute()
+    {
+        return $this->getFirstMediaUrl('category') ?: null;
     }
 }

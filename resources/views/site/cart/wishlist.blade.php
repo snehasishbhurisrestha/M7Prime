@@ -4,24 +4,25 @@
 
 @section('content')
 <!-- Page item Area -->
-<div id="page_item_area">
+<section class="breadcrumb-option">
     <div class="container">
         <div class="row">
-            <div class="col-sm-6 text-left">
-                <h3>Wishlist</h3>
-            </div>		
-            <div class="col-sm-6 text-right">
-                <ul class="p_items">
-                    <li><a href="{{ route('home') }}">home</a></li>
-                    <li><span>Wishlist</span></li>
-                </ul>					
-            </div>	
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <h4>Wishlist</h4>
+                    <div class="breadcrumb-links">
+                        <a href="{{ route('home') }}">Home</a>
+                        <a href="{{ route('product.all') }}">Shop</a>
+                        <span>Wishlist</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Wishlist Page -->
-<div class="wishlist-page">
+{{-- <div class="wishlist-page">
     <div class="container">
         <div class="table-responsive">
             <table class="table cart-table cart_prdct_table text-center">
@@ -50,5 +51,46 @@
             </table>
         </div>
     </div>
-</div>
+</div> --}}
+
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shopping-cart-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Image</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Add to Cart</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($wishlists as $wishlist)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <a href="{{ route('product.details',$wishlist->product?->slug) }}" class="cp_img"><img src="{{ getProductMainImage($wishlist->product?->id) }}" alt="" style="width: 90px; height: 90px; object-fit: cover;" /></a>
+                                </td>
+                                <td>
+                                    <a href="{{ route('product.details',$wishlist->product?->slug) }}" class="cart-pro-title">{{ $wishlist->product?->name }}</a>
+                                </td>
+                                <td>
+                                    ₹{{ $wishlist->product?->total_price }}
+                                </td>
+                                <td><a href="javascript:void(0);" class="btn btn-danger add-to-cart-btn" data-product-id="{{ $wishlist->product?->id }}">Add to Cart</a></td>
+                                <td class="cart-close cp_remove"><a href="{{ route('wishlist.delete',$wishlist->id) }}"><i class="fa fa-close"></i></a></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @endsection

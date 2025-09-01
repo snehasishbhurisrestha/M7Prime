@@ -32,7 +32,8 @@ class BrandController extends Controller implements HasMiddleware
 
     public function create()
     {
-        return view('admin.brand.create');
+        $brands = Brand::where('parent_id',null)->get();
+        return view('admin.brand.create',compact('brands'));
     }
 
     public function store(Request $request)
@@ -40,7 +41,7 @@ class BrandController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255',
-            'parent_id' => 'nullable|exists:categories,id',
+            'parent_id' => 'nullable|exists:brands,id',
             'description' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'is_visible' => 'required|in:0,1'
@@ -52,6 +53,7 @@ class BrandController extends Controller implements HasMiddleware
         $brand = new Brand();
         $brand->name = $request->name;
         $brand->slug = createSlug($request->name,Brand::class);
+        $brand->parent_id = $request->parent_id;
         $brand->description = $request->description;
 
         if ($request->hasFile('image')) {
@@ -79,7 +81,8 @@ class BrandController extends Controller implements HasMiddleware
     public function edit(string $id)
     {
         $brand = Brand::find($id);
-        return view('admin.Brand.edit',compact('brand'));
+        $brands = Brand::where('parent_id',null)->get();
+        return view('admin.Brand.edit',compact('brand','brands'));
     }
 
     public function update(Request $request, string $id)
@@ -87,7 +90,7 @@ class BrandController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255',
-            'parent_id' => 'nullable|exists:categories,id',
+            'parent_id' => 'nullable|exists:brands,id',
             'description' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_visible' => 'required|in:0,1'
@@ -101,6 +104,7 @@ class BrandController extends Controller implements HasMiddleware
             $brand->slug = createSlug($request->name,Brand::class);
             $brand->name = $request->name;
         }
+        $brand->parent_id = $request->parent_id;
         $brand->description = $request->description;
 
         if ($request->hasFile('image')) {

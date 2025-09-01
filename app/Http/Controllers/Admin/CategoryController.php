@@ -88,6 +88,7 @@ class CategoryController extends Controller implements HasMiddleware
 
     public function update(Request $request, string $id)
     {
+        // return $request->all();
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'slug' => 'nullable|max:255',

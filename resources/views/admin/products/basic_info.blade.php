@@ -43,7 +43,7 @@
                                                 <input data-parsley-type="text" type="text" class="form-control" required placeholder="Enter Product Title" name="product_name">
                                             </div>
                                         </div>
-                                        <div class="col-12 mb-3">
+                                        {{-- <div class="col-12 mb-3">
                                             <label class="form-label" for="brand">Brand</label>
                                             <div>
                                                 <select class="form-control" id="brand" name="brand">
@@ -53,7 +53,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Sort Description</label>
                                             <textarea class="form-control no-resize summernote" name="sort_description" id=""></textarea>
@@ -63,6 +63,23 @@
                                             <label class="form-label">Long Description</label>
                                             <textarea class="form-control no-resize summernote" name="long_description" id=""></textarea>
                                         </div>
+
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">Meta Title</label>
+                                            <input type="text" class="form-control" name="meta_title" value="{{ old('meta_title', $product->meta_title ?? '') }}">
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">Meta Keywords</label>
+                                            <input type="text" class="form-control" name="meta_keywords" value="{{ old('meta_keywords', $product->meta_keywords ?? '') }}">
+                                            <small class="text-muted">Separate keywords with commas</small>
+                                        </div>
+
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label">Meta Description</label>
+                                            <textarea class="form-control no-resize" name="meta_description" rows="3">{{ old('meta_description', $product->meta_description ?? '') }}</textarea>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -92,6 +109,34 @@
                                             'parent_id' => $category->id,
                                             'margin' => 20,
                                             'selectedCategories' => isset($selectedCategories) ? $selectedCategories : [],
+                                        ])
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Brands</h3>
+                            <div class="card-options ">
+                                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="category-tree" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                                @if (!empty($brands))
+                                    @foreach ($brands as $brand)
+                                        <!-- Only display top-level brands -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="brands[]" value="{{ $brand->id }}" id="brand{{ $category->id }}" {{ isset($selectedCategories) && in_array($category->id, $selectedCategories) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="brand{{ $brand->id }}"> {{ $brand->name }} </label>
+                                        </div>
+                                        @include('admin.products.subbrands', [
+                                            'subbrands' => $brand->children,
+                                            'parent_id' => $brand->id,
+                                            'margin' => 20,
+                                            'selectedBrands' => isset($selectedBrands) ? $selectedBrands : [],
                                         ])
                                     @endforeach
                                 @endif
@@ -162,6 +207,19 @@
                                     <label class="form-check-label" for="is_visible2">Hide</label>
                                 </div>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label mb-3 d-flex">Best Selling Product</label>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="is_best_selling1" name="is_best_selling" class="form-check-input" value="1">
+                                    <label class="form-check-label" for="is_best_selling1">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" id="is_best_selling2" name="is_best_selling" class="form-check-input" value="0" checked>
+                                    <label class="form-check-label" for="is_best_selling2">No</label>
+                                </div>
+                            </div>
+                            
                             <div class="mb-0">
                                 <div>
                                     <button type="submit" class="btn btn-primary waves-effect waves-light me-1">

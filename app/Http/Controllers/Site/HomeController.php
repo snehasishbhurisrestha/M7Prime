@@ -29,4 +29,4 @@ class HomeController extends Controller
         return view('site.home',compact('sliders','categorys','brands','testimonials','featured_products','all_products'));
     }
 }
-
+ 

@@ -36,7 +36,8 @@ class ProductController extends Controller implements HasMiddleware
 
     public function basic_info_create(){
         $categorys = Category::where('is_visible',1)->where('parent_id',null)->get();
-        $brands = Brand::where('is_visible',1)->get();
+        $brands = Brand::where('is_visible',1)->where('parent_id',null)->get();
+        // $brands = Brand::where('is_visible',1)->get();
         return view('admin.products.basic_info',compact('categorys','brands'));
     }
 
@@ -55,6 +56,13 @@ class ProductController extends Controller implements HasMiddleware
         $product->product_type = $request->product_type ?? 'simple';
         $product->sort_description = $request->sort_description;
         $product->long_description = $request->long_description;
+
+        // SEO fields
+        $product->meta_title = $request->meta_title;
+        $product->meta_keywords = $request->meta_keywords;
+        $product->meta_description = $request->meta_description;
+
+        // Pricing defaults
         $product->price = 0.00;
         $product->product_price = 0.00;
         $product->discount_rate = 0;
@@ -62,14 +70,23 @@ class ProductController extends Controller implements HasMiddleware
         $product->gst_rate = 0;
         $product->gst_amount = 0.00;
         $product->total_price = 0.00;
+
+        // Visibility & flags
         $product->is_special = $request->is_special;
         $product->is_home = $request->is_home;
         $product->is_featured = $request->is_featured;
         $product->is_visible = $request->is_visible;
+        $product->is_best_selling = $request->is_best_selling;
+
         $res = $product->save();
+
 
         if ($request->has('categories')) {  
             $product->categories()->sync($request->categories);
+        }
+
+        if ($request->has('brands')) {  
+            $product->brands()->sync($request->brands);
         }
 
         if($res){
@@ -86,10 +103,12 @@ class ProductController extends Controller implements HasMiddleware
 
     public function basic_info_edit(Request $request){
         $categorys = Category::where('is_visible',1)->where('parent_id',null)->get();
+        $brands = Brand::where('is_visible',1)->where('parent_id',null)->get();
         $product = Product::find($request->id);
         $selectedCategories = $product->categories->pluck('id')->toArray();
-        $brands = Brand::where('is_visible',1)->get();
-        return view('admin.products.basic_info_edit',compact('categorys','product','selectedCategories','brands'));
+        $selectedBrands = $product->brands->pluck('id')->toArray();
+        // $brands = Brand::where('is_visible',1)->get();
+        return view('admin.products.basic_info_edit',compact('categorys','product','selectedCategories','brands','selectedBrands'));
     }
 
     public function basic_info_edit_process(Request $request){
@@ -98,6 +117,12 @@ class ProductController extends Controller implements HasMiddleware
             $product->name = $request->product_name;
             $product->slug = createSlug($request->product_name, Product::class);
         }
+
+        // SEO fields
+        $product->meta_title = $request->meta_title;
+        $product->meta_keywords = $request->meta_keywords;
+        $product->meta_description = $request->meta_description;
+
         $product->brand_id = $request->brand;
         $product->product_type = $request->product_type;
         $product->sort_description = $request->sort_description;
@@ -106,10 +131,15 @@ class ProductController extends Controller implements HasMiddleware
         $product->is_home = $request->is_home;
         $product->is_featured = $request->is_featured;
         $product->is_visible = $request->is_visible;
+        $product->is_best_selling = $request->is_best_selling;
         $res = $product->update();
 
         if ($request->has('categories')) {  
             $product->categories()->sync($request->categories);
+        }
+
+        if ($request->has('brands')) {  
+            $product->brands()->sync($request->brands);
         }
 
         if($res){

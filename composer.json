@@ -42,7 +42,8 @@
             "app/Helpers/RolePermission_Helper.php",
             "app/Helpers/Site_Header_Helper.php",
             "app/Helpers/Cart_Helper.php",
-            "app/Helpers/Order_Helper.php"
+            "app/Helpers/Order_Helper.php",
+            "app/Helpers/Api_Helper.php"
         ]
     },
     "scripts": {

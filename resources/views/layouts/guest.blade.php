@@ -20,14 +20,14 @@
 </head>
 <body class="font-muli theme-cyan gradient">
 
-    <div class="auth option2" style="background-image: url('{{ asset('assets/admin-assets/images/9094466.jpg') }}'); background-size: cover; background-position: center; height: 100vh;">
+    <div class="auth option2" style="background-image: url('{{ asset('assets/admin-assets/images/login-bg.jpg') }}'); background-size: cover; background-position: center; height: 100vh;">
         <div class="auth_left" style="@yield('auth_left_style')">
-            <div class="card">
+            <div class="card" style="background-color: #ffffff1a;">
                 <div class="card-body">
                     <div class="text-center">
                         <a class="header-brand" href="{{ route('home') }}">{{--<i class="fa fa-graduation-cap brand-logo"></i>--}}
                             {{-- <img src="{{ asset('assets/site-assets/img/logo-removebg-preview.png') }}" alt="">  --}}
-                            <h1>M7 Prime</h1>
+                            <h1>{{ config('app.name', 'Laravel') }}</h1>
                         </a>
                         <div class="card-title mt-3">@yield('login-title')</div>
                     </div>

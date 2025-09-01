@@ -388,37 +388,39 @@
             @foreach($relatedProducts as $relatedProduct)
             <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
                 <div class="product-item">
-                    <div class="product-item-pic set-bg" data-setbg="{{ getProductMainImage($relatedProduct->id) }}" style="background-image: url('{{ getProductMainImage($relatedProduct->id) }}');">
-                        <span class="label">New</span>
-                        <ul class="product-hover">
-                            <li><a href="javascript:void(0);" class="add-to-wishlist" data-product-id="{{ $relatedProduct->id }}"><img src="{{ asset('assets/site-assets/img/icon/heart.png') }}" alt=""></a></li>
-                            <li><a href="#"><img src="{{ asset('assets/site-assets/img/icon/compare.png') }}" alt=""> <span>Compare</span></a></li>
-                            <li><a href="{{ route('product.details',$relatedProduct->slug) }}"><img src="{{ asset('assets/site-assets/img/icon/search.png') }}" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product-item-text">
-                        <h6>{{ $relatedProduct->name }}</h6>
-                        <a href="javascript:void(0);" class="add-cart add-to-cart-btn" data-product-id="{{ $relatedProduct->id }}">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
+                    <a href="{{ route('product.details',$relatedProduct->slug) }}">
+                        <div class="product-item-pic set-bg" data-setbg="{{ getProductMainImage($relatedProduct->id) }}" style="background-image: url('{{ getProductMainImage($relatedProduct->id) }}');">
+                            <span class="label">New</span>
+                            <ul class="product-hover">
+                                <li><a href="javascript:void(0);" class="add-to-wishlist" data-product-id="{{ $relatedProduct->id }}"><img src="{{ asset('assets/site-assets/img/icon/heart.png') }}" alt=""></a></li>
+                                <li><a href="#"><img src="{{ asset('assets/site-assets/img/icon/compare.png') }}" alt=""> <span>Compare</span></a></li>
+                                <li><a href="{{ route('product.details',$relatedProduct->slug) }}"><img src="{{ asset('assets/site-assets/img/icon/search.png') }}" alt=""></a></li>
+                            </ul>
                         </div>
-                        <h5>₹{{ $relatedProduct->total_price }}</h5>
-                        {{-- <div class="product-color-select">
-                            <label for="pc-1">
-                                <input type="radio" id="pc-1">
-                            </label>
-                            <label class="active black" for="pc-2">
-                                <input type="radio" id="pc-2">
-                            </label>
-                            <label class="grey" for="pc-3">
-                                <input type="radio" id="pc-3">
-                            </label>
-                        </div> --}}
-                    </div>
+                        <div class="product-item-text">
+                            <h6>{{ $relatedProduct->name }}</h6>
+                            <a href="javascript:void(0);" class="add-cart add-to-cart-btn" data-product-id="{{ $relatedProduct->id }}">+ Add To Cart</a>
+                            <div class="rating">
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                            <h5>₹{{ $relatedProduct->total_price }}</h5>
+                            {{-- <div class="product-color-select">
+                                <label for="pc-1">
+                                    <input type="radio" id="pc-1">
+                                </label>
+                                <label class="active black" for="pc-2">
+                                    <input type="radio" id="pc-2">
+                                </label>
+                                <label class="grey" for="pc-3">
+                                    <input type="radio" id="pc-3">
+                                </label>
+                            </div> --}}
+                        </div>
+                    </a>
                 </div>
             </div>
             @endforeach	

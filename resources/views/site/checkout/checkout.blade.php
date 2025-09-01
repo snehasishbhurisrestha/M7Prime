@@ -231,7 +231,7 @@
                                 key: response.key,
                                 amount: response.amount,
                                 currency: 'INR',
-                                name: 'Your Shop',
+                                name: 'M7Prime',
                                 description: 'Complete your order payment',
                                 order_id: response.order_id,
                                 prefill: {
@@ -266,7 +266,7 @@
                                     });
                                 },
                                 theme: {
-                                    color: '#F37254'
+                                    color: '#012652'
                                 },
                                 modal: {
                                     ondismiss: function () {

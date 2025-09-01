@@ -36,6 +36,7 @@
                                     <tr>
                                         <th>Sl.no</th>
                                         <th>Title</th>
+                                        <th>Parent Brand</th>
                                         <th>Description</th>
                                         <th>Image</th>
                                         <th>Visibility</th>
@@ -54,6 +55,7 @@
                                     <tr>
                                         <td class="text-wrap">{{ $loop->iteration }}</td>
                                         <td class="text-wrap">{{ $brand->name }}</td>
+                                        <td class="text-wrap">{{ $brand->parent?->name }}</td>
                                         <td class="text-wrap">{!! $brand->description !!}</td>
                                         <td><img class="img-thumbnail rounded me-2" src="{{ $brand->getFirstMediaUrl('brand') }}" width="60" alt=""></td>
                                         <td>{!! check_status($brand->is_visible) !!}</td>

@@ -48,6 +48,32 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-3 col-form-label" for="parent_id">Parent Brand <span class="text-danger">*</span></label>
+                                <div class="col-md-9">
+                                    <select class="form-control input-height" id="parent_id" name="parent_id">
+                                        <option selected disabled value="">Choose parent brand...</option>
+                                        @foreach($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                            {{-- @foreach ($brand->children as $child)
+                                                <option value="{{ $child->id }}" @if(old('parent_id') == $child->id) selected @endif>
+                                                    &nbsp;&nbsp;&nbsp;-- {{ $child->name }}
+                                                </option>
+                                                @foreach ($child->children as $childs)
+                                                    <option value="{{ $childs->id }}" @if(old('parent_id') == $childs->id) selected @endif>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $childs->name }}
+                                                    </option>
+                                                    @foreach ($childs->children as $subchilds)
+                                                    <option value="{{ $subchilds->id }}" @if(old('parent_id') == $subchilds->id) selected @endif>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $subchilds->name }}
+                                                    </option>
+                                                    @endforeach
+                                                @endforeach
+                                            @endforeach --}}
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-md-3 col-form-label">Description</label>
                                 <div class="col-md-9">
                                     <textarea rows="4" class="form-control no-resize summernote" placeholder="Enter Description" name="description">{{ old('description') }}</textarea>

@@ -35,11 +35,11 @@ Route::post('get-state-list',[LocationController::class,'get_state_list'])->name
 Route::post('get-city-list',[LocationController::class,'get_city_list'])->name('get-city-list');
 
 
-Route::get('/',[HomeController::class,'index'])->name('home');
+Route::get('/home',[HomeController::class,'index'])->name('home');
 
-// Route::get('/', function () {
-//     return redirect()->route('login');
-// });
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 
 
