@@ -12,10 +12,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 use Spatie\Permission\Traits\HasRoles;
 
+use Laravel\Sanctum\HasApiTokens;
+
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.

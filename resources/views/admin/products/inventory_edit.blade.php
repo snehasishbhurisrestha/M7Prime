@@ -32,7 +32,7 @@
                         <div class="card-body">
                             <!-- Nav tabs -->
                             @include('admin.products.nav-tabs-edit')
-                            <input type="hidden" name="product_id" value="{{ request()->segment(4) }}">
+                            <input type="hidden" name="id" value="{{ request()->segment(4) }}">
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <div class="tab-pane active p-3" id="inventory" role="tabpanel">

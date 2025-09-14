@@ -8,6 +8,8 @@ use App\Http\Controllers\API\{
     CategoryApiController,
     BrandApiController,
     ProductApiController,
+    GoogleAuthApiController,
+    AuthenticationApiController,
 };
 
 
@@ -25,3 +27,13 @@ Route::get('/products/featured', [ProductApiController::class, 'featured']);
 Route::get('/products/special', [ProductApiController::class, 'special']);
 Route::get('/products/best-selling', [ProductApiController::class, 'bestSelling']);
 Route::get('/products/{id}', [ProductApiController::class, 'show']);
+
+Route::get('/auth/google/generate-url', [GoogleAuthApiController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthApiController::class, 'handleGoogleCallback']);
+
+Route::post('/register', [AuthenticationApiController::class, 'register']);
+Route::post('/login', [AuthenticationApiController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthenticationApiController::class, 'logout']);
+});

@@ -41,6 +41,23 @@
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <div class="tab-pane active p-3" id="pricedetails" role="tabpanel">
+                                    @if($product->product_type != 'simple')
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Select Variation Option</label>
+                                            <select class="form-control" id="option-selector">
+                                                <option value="0">Default Images (no specific option)</option>
+                                                @foreach($variations as $variation)
+                                                    <optgroup label="{{ $variation->name }}">
+                                                        @foreach($variation->options as $option)
+                                                            <option value="{{ $option->id }}">{{ $option->variation_name }}</option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @endif
                                     <div class="dm-uploader-container">
                                         <div id="drag-and-drop-zone" class="dm-uploader text-center">
                                             <p class="dm-upload-icon">
@@ -55,16 +72,22 @@
                                             <ul class="dm-uploaded-files" id="files-image">
                                                 <?php if (!empty($product_images)):
                                                     foreach ($product_images as $image):?>
-                                                        <li class="media" id="uploaderFile<?php echo $image->getCustomProperty('file_id'); ?>">
+                                                        <li class="media" id="uploaderFile<?php echo $image->getCustomProperty('file_id'); ?>" data-option-id="{{ $image->getCustomProperty('option_id', 0) }}">
                                                             <img src="{{ $image->getUrl() }}" alt="">
                                                             <a href="javascript:void(0)" class="btn-img-delete btn-delete-product-img text-center" data-file-id="{{ $image->getCustomProperty('file_id') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove this Item">
                                                                 <i class="fa fa-trash-o text-light"></i>
                                                             </a>
+                                                            @if ($image->getCustomProperty('option_id'))
+                                                                <span class="badge bg-info option-badge" style="z-index:99999999;">
+                                                                    {{ $image->getCustomProperty('option_name') }}
+                                                                </span>
+                                                            @endif
                                                             @if ($image->getCustomProperty('is_main'))
                                                                 <a href="javascript:void(0)" class="float-start btn btn-success mt-1 btn-sm waves-effect btn-set-image-main" style="padding-bottom: 0px;padding-top: 0px;padding-right: 4px;padding-left: 4px;">Main</a>
                                                             @else
                                                                 <a href="javascript:void(0)" class="float-start btn btn-secondary btn-sm mt-1 waves-effect btn-set-image-main" style="padding-bottom: 0px;padding-top: 0px;padding-right: 4px;padding-left: 4px;" data-file-id="{{ $image->getCustomProperty('file_id') }}">Main</a>
                                                             @endif
+                                                            
                                                         </li>
                                                     <?php endforeach;
                                                 endif; ?>
@@ -106,7 +129,7 @@
         </div>
     </div>
 </form>
-
+ 
 @endsection
 
 @section('script')
@@ -126,6 +149,29 @@
     </script>
     <script>
         $(document).ready(function() {
+
+            // Track current variation selection
+            let currentOptionId = $('#option-selector').val();
+    
+            // Filter images when option changes
+            $('#option-selector').change(function() {
+                currentOptionId = $(this).val();
+                filterImagesByOption(currentOptionId);
+            });
+            
+            // Function to filter images by option
+            function filterImagesByOption(optionId) {
+                if (optionId === '0') {
+                    // Show all images
+                    $('#files-image li').show();
+                } else {
+                    // Show only images for selected option
+                    $('#files-image li').each(function() {
+                        const imgOptionId = $(this).data('option-id');
+                        $(this).toggle(imgOptionId == optionId);
+                    });
+                }
+            }
             /*
             * Image Uploader
             */
@@ -137,9 +183,13 @@
                 allowedTypes: 'image/*',
                 extFilter: ["jpg", "jpeg", "png", "gif", "webp"],
                 extraData: function(id) {
+                    const optionId = $('#option-selector').val();
+                    const optionName = $('#option-selector option:selected').text();
+                    
                     return {
                         "file_id": id,
                         "product_id": "{{ request()->segment(4) }}",
+                        "option_id": optionId,
                         "_token": "{{ csrf_token() }}"
                     };
                 },
@@ -183,7 +233,6 @@
                                 "_token": "{{ csrf_token() }}"
                             },
                             success: function(response) {
-                                console.log(response.html);
                                 document.getElementById("uploaderFile" + id).innerHTML = response.html;
                             }
                         });

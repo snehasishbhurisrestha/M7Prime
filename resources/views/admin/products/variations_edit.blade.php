@@ -31,7 +31,6 @@
                     <div class="card-body">
                         <!-- Nav tabs -->
                         @include('admin.products.nav-tabs-edit')
-                        <input type="hidden" name="product_id" value="{{ request()->segment(4) }}">
                         <!-- Tab panes -->
 
                         <div class="tab-content">
@@ -171,8 +170,9 @@
                     <div class="card-body">
                         <div class="mb-0">
                             <div>
-                                <form action="{{ route('products.inventory-edit',request()->segment(3)) }}" method="get">
+                                <form action="{{ route('products.inventory-edit',request()->segment(4)) }}" method="get">
                                     @csrf
+                                    <input type="hidden" name="id" value="{{ request()->segment(4) }}">
                                 <button type="submit" class="btn btn-primary waves-effect waves-light me-1">
                                     Save & Next
                                 </button>
