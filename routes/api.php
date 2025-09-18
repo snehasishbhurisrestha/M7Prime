@@ -10,6 +10,9 @@ use App\Http\Controllers\API\{
     ProductApiController,
     GoogleAuthApiController,
     AuthenticationApiController,
+    CartApiController,
+    CheckoutApiController,
+    LocationApiController,
 };
 
 
@@ -36,4 +39,18 @@ Route::post('/login', [AuthenticationApiController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticationApiController::class, 'logout']);
+
+    Route::post('/add-to-cart', [CartApiController::class, 'add_to_cart']);
+    Route::get('/get-cart-items', [CartApiController::class, 'cart_items']);
+    Route::post('/remove-from-cart', [CartApiController::class, 'remove_from_cart']);
+
+    Route::get('/get-saved-address', [CheckoutApiController::class, 'get_saved_address']);
+    Route::post('/add-new-addresss-book', [CheckoutApiController::class, 'add_new_addresss_book']);
+
+    Route::get('create-razorpay-order',[CheckoutApiController::class, 'createRazorpayOrder']);
+    Route::post('place-order',[CheckoutApiController::class, 'placeOrderWithRazorpay']);
 });
+
+Route::get('/countries', [LocationApiController::class, 'getCountries']);
+Route::get('/states/{country_id}', [LocationApiController::class, 'getStates']);
+Route::get('/cities/{state_id}', [LocationApiController::class, 'getCities']);

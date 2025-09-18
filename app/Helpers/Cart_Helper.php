@@ -6,8 +6,8 @@
     use Illuminate\Support\Facades\Cookie;
 
     if(!function_exists('calculate_cart_total')){
-        function calculate_cart_total(){
-            $userId = Auth::check() ? Auth::id() : Cookie::get('guest_user_id');
+        function calculate_cart_total($user_id = null){
+            $userId = $user_id ?? Auth::check() ? Auth::id() : Cookie::get('guest_user_id');
             // $carts = Cart::where('user_id', $userId)->with('product')->get();
 
             // $totalPrice = $carts->sum(function ($cart) {

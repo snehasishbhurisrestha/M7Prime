@@ -36,6 +36,7 @@ class OrderController extends Controller implements HasMiddleware
     public function show($id){
         $order = Order::find($id);
         $buyer_details = User::find($order->user_id);
+        // return $buyer_details;
         $address_book = AddressBook::find($order->address_book_id);
         $order_items = $order->items;
         return view('admin.orders.show',compact('order','buyer_details','order_items','address_book'));

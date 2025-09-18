@@ -20,4 +20,9 @@ class Cart extends Model
     {
         return $this->belongsTo(ProductVariationOption::class, 'product_variation_options_id');
     }
+
+    public function variation()
+    {
+        return $this->belongsTo(ProductVariationOption::class, 'product_variation_options_id');
+    }
 }

@@ -23,15 +23,21 @@ class GoogleAuthApiController extends Controller
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
+        $nameParts = explode(' ', $googleUser->getName(), 2);
         // Find or create user
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],
             [
                 'name' => $googleUser->getName(),
+                'first_name' => $nameParts[0],
+                'last_name' => $nameParts[1] ?? '',
                 'google_id' => $googleUser->getId(),
                 // 'avatar' => $googleUser->getAvatar(),
+                'user_id' => generateUniqueId('user'),
             ]
         );
+
+        $user->syncRoles('User');
 
         // Generate JWT / Sanctum / Passport token
         $token = $user->createToken('auth_token')->plainTextToken;

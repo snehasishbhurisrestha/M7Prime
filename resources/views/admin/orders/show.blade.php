@@ -91,38 +91,45 @@
                                         @endif
                                     </div>
                                 </div>
+                                
+                                <div class="row mb-0">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Transaction ID</label>
+                                    <div class="col-sm-8">
+                                        <strong class="font-right">{{ $order->transaction_id ? $order->transaction_id : '' }}</strong>
+                                    </div>
+                                </div>
                                 <div class="row mb-0">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Payment Date</label>
                                     <div class="col-sm-8">
                                         <strong class="font-right">{{ $order->payment_date ? format_datetime($order->payment_date) : '' }}</strong>
                                     </div>
                                 </div>
-                                <div class="row mb-0">
+                                {{-- <div class="row mb-0">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Order Note</label>
                                     <div class="col-sm-8">
                                         <strong class="font-right">{{ $address_book->addl_info }}</strong>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             
                             <div class="col-lg-6">
                                 <div class="row mb-0">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">User Name</label>
                                     <div class="col-sm-8">
-                                        <strong class="font-right">{{ $buyer_details->name }}</strong>
+                                        <strong class="font-right">{{ $buyer_details->name ?? ""}}</strong>
                                     </div>
                                 </div>
                                 <div class="row mb-0">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Phone Number</label>
                                     <div class="col-sm-8">
-                                        <strong class="font-right">{{ $buyer_details->phone }}</strong>
+                                        <strong class="font-right">{{ $buyer_details->phone ?? '' }}</strong>
                                     </div>
                                 </div>
 
                                 <div class="row mb-0">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
                                     <div class="col-sm-8">
-                                        <strong class="font-right">{{ $buyer_details->email }}</strong>
+                                        <strong class="font-right">{{ $buyer_details->email ?? "" }}</strong>
                                     </div>
                                 </div>
 
