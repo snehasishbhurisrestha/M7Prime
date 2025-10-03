@@ -79,8 +79,8 @@
                     <li class="active"><a href="{{ route('coupon.index') }}"><i class="fa fa-ticket"></i><span>Coupon</span></a></li>
                     @endcan
 
-                    @can('Testimonial Show')
-                    <li class="active"><a href="{{ route('testimonial.index') }}"><i class="fa fa-comment"></i><span>Testimonial</span></a></li>
+                    @can('Review Show')
+                    <li class="active"><a href="{{ route('reviews.index') }}"><i class="fa fa-comment"></i><span>Reviews</span></a></li>
                     @endcan
 
                     @can('ContactUs Show')

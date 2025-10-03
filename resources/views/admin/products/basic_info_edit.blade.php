@@ -124,11 +124,16 @@
                         </div>
                         <div class="card-body">
                             <div class="category-tree" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                                <!-- Select All Checkbox -->
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="selectAllBrands">
+                                    <label class="form-check-label fw-bold" for="selectAllBrands"> Select All </label>
+                                </div>
                                 @if (!empty($brands))
                                     @foreach ($brands as $brand)
                                         <!-- Only display top-level brands -->
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="brands[]" value="{{ $brand->id }}" id="brand{{ $brand->id }}" {{ isset($selectedBrands) && in_array($brand->id, $selectedBrands) ? 'checked' : '' }}>
+                                            <input class="form-check-input brand-checkbox" type="checkbox" name="brands[]" value="{{ $brand->id }}" id="brand{{ $brand->id }}" {{ isset($selectedBrands) && in_array($brand->id, $selectedBrands) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="brand{{ $brand->id }}"> {{ $brand->name }} </label>
                                         </div>
                                         @include('admin.products.subbrands', [
@@ -235,4 +240,35 @@
     </div>
 </form>
 
+@endsection
+
+@section('script')
+<script>
+    const selectAll = document.getElementById("selectAllBrands");
+    const brandCheckboxes = document.querySelectorAll(".brand-checkbox");
+
+    // Handle select all click
+    selectAll.addEventListener("change", function() {
+        let isChecked = this.checked;
+        brandCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Handle individual checkbox click
+    brandCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener("change", function() {
+            if (document.querySelectorAll(".brand-checkbox:checked").length === brandCheckboxes.length) {
+                selectAll.checked = true;   // all checked
+            } else {
+                selectAll.checked = false;  // not all checked
+            }
+        });
+    });
+
+    // Initialize state on page load
+    if (document.querySelectorAll(".brand-checkbox:checked").length === brandCheckboxes.length && brandCheckboxes.length > 0) {
+        selectAll.checked = true;
+    }
+</script>
 @endsection

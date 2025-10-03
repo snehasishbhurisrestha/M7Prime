@@ -13,6 +13,8 @@ use App\Http\Controllers\API\{
     CartApiController,
     CheckoutApiController,
     LocationApiController,
+    UserApiController,
+    ProductReviewApiController,
 };
 
 
@@ -49,8 +51,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('create-razorpay-order',[CheckoutApiController::class, 'createRazorpayOrder']);
     Route::post('place-order',[CheckoutApiController::class, 'placeOrderWithRazorpay']);
+
+    // Profile
+    Route::get('/user/get-profile', [UserApiController::class, 'getProfile']);
+    Route::post('/user/update-profile', [UserApiController::class, 'updateProfile']);
+
+    // Orders
+    Route::get('/user/orders', [UserApiController::class, 'getOrders']);
+    Route::get('/user/orders/{id}', [UserApiController::class, 'getOrderDetails']);
+
+    // Address
+    Route::get('/user/get-addresses', [UserApiController::class, 'getAddresses']);
+    Route::post('/user/add-addresses', [UserApiController::class, 'addAddress']);
+    Route::put('/user/update-addresses/{id}', [UserApiController::class, 'updateAddress']);
+    Route::delete('/user/delete-addresses/{id}', [UserApiController::class, 'deleteAddress']); 
 });
 
 Route::get('/countries', [LocationApiController::class, 'getCountries']);
 Route::get('/states/{country_id}', [LocationApiController::class, 'getStates']);
 Route::get('/cities/{state_id}', [LocationApiController::class, 'getCities']);
+
+// Reviews
+Route::get('reviews', [ProductReviewApiController::class, 'index']);
+Route::get('reviews/{id}', [ProductReviewApiController::class, 'show']);

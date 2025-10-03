@@ -125,6 +125,11 @@
                         </div>
                         <div class="card-body">
                             <div class="category-tree" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                                <!-- Select All Checkbox -->
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="selectAllBrands">
+                                    <label class="form-check-label fw-bold" for="selectAllBrands"> Select All </label>
+                                </div>
                                 @if (!empty($brands))
                                     @foreach ($brands as $brand)
                                         <!-- Only display top-level brands -->

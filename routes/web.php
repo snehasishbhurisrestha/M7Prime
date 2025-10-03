@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\{
     CouponController,
     ContactUsController,
     UsersController,
+    ProductReviewController,
 };
 
 use App\Http\Controllers\Site\{
@@ -210,6 +211,8 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::resource('contact-us', ContactUsController::class);
+        Route::delete('/reviews/media-delete/{review}/media/{media}', [ProductReviewController::class, 'destroyMedia'])->name('reviews.media.destroy');
+        Route::resource('reviews', ProductReviewController::class);
     });
 
 });

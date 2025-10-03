@@ -112,6 +112,7 @@ class ProductController extends Controller implements HasMiddleware
     }
 
     public function basic_info_edit_process(Request $request){
+        // return $request->all();
         $product = Product::findOrFail($request->product_id);
         if($product->name != $request->product_name){
             $product->name = $request->product_name;
@@ -136,10 +137,14 @@ class ProductController extends Controller implements HasMiddleware
 
         if ($request->has('categories')) {  
             $product->categories()->sync($request->categories);
+        }else{
+            $product->categories()->sync([]);
         }
 
-        if ($request->has('brands')) {  
+        if ($request->has('brands')) {
             $product->brands()->sync($request->brands);
+        } else {
+            $product->brands()->sync([]);
         }
 
         if($res){
