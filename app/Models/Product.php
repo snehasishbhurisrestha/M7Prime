@@ -55,4 +55,14 @@ class Product extends Model implements HasMedia
 
         return $mainImage ? $mainImage->getUrl() : null;
     }
+
+    public function recentlyViewedBy()
+    {
+        return $this->hasMany(RecentlyViewedProduct::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
 }

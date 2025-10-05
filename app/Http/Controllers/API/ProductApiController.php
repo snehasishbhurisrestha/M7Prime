@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\RecentlyViewedProduct;
+use App\Models\ProductReview;
 
 class ProductApiController extends Controller
 {
@@ -84,11 +86,112 @@ class ProductApiController extends Controller
     }
 
     // 🔹 Product details
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $product = Product::with(['categories', 'brands', 'variations.options'])
+        $product = Product::with(['categories', 'brands', 'variations.options', 'reviews.user', 'reviews.media'])
             ->findOrFail($id);
 
-        return apiResponse(true, 'Product Details', ['product' => $product], 200);
+        // Save recently viewed product
+        if ($request->user()) {
+            RecentlyViewedProduct::updateOrCreate(
+                [
+                    'user_id' => $request->user()->id,
+                    'product_id' => $product->id,
+                ],
+                [
+                    'updated_at' => now(),
+                ]
+            );
+        }
+
+        // Format reviews (with images and videos)
+        $reviews = $product->reviews->map(function ($review) {
+            $images = $review->getMedia('review-media')
+                ->filter(fn($media) => str_starts_with($media->mime_type, 'image/'))
+                ->map(fn($media) => $media->getUrl())
+                ->values();
+
+            $videos = $review->getMedia('review-media')
+                ->filter(fn($media) => str_starts_with($media->mime_type, 'video/'))
+                ->map(fn($media) => $media->getUrl())
+                ->values();
+
+            return [
+                'id'          => $review->id,
+                'user'        => [
+                    'id'     => $review->user->id,
+                    'name'   => $review->user->name,
+                    'avatar' => $review->user->profile_photo_url ?? null,
+                ],
+                'rating'      => $review->rating,
+                'review_text' => $review->review_text,
+                'images'      => $images,
+                'videos'      => $videos,
+                'created_at'  => $review->created_at->format('Y-m-d H:i'),
+            ];
+        });
+
+        // Calculate review stats
+        $averageRating = $product->reviews->avg('rating');
+        $reviewCount   = $product->reviews->count();
+
+        // Final response
+        return apiResponse(true, 'Product Details', [
+            'product'        => $product,
+            'reviews'        => $reviews,
+            'average_rating' => round($averageRating, 1),
+            'review_count'   => $reviewCount,
+        ], 200);
     }
+
+
+    public function recently_viewed_products(Request $request)
+    {
+        // Get last 10 recently viewed products for authenticated user
+        $recent = RecentlyViewedProduct::with([
+                    'product.categories',
+                    'product.brands',
+                    'product.variations.options'
+                ])
+                    ->where('user_id', $request->user()->id)
+                    ->latest('updated_at')
+                    ->take(10)
+                    ->get()
+                    ->pluck('product');
+
+        return apiResponse(true, 'Recently viewed products', ['product' => $recent], 200);
+    }
+
+    public function related_products($id)
+    {
+        // Load the current product with its categories and brand
+        $product = Product::with(['categories', 'brands'])
+            ->findOrFail($id);
+
+        // Get category IDs and brand IDs
+        $categoryIds = $product->categories->pluck('id')->toArray();
+        $brandIds = $product->brands->pluck('id')->toArray();
+
+        // Fetch related products
+        $relatedProducts = Product::with([
+                'categories',
+                'brands',
+                'variations.options'
+            ])
+            ->where('id', '!=', $product->id) // exclude current product
+            ->where(function ($query) use ($categoryIds, $brandIds) {
+                $query->whereHas('categories', function ($q) use ($categoryIds) {
+                    $q->whereIn('categories.id', $categoryIds);
+                })
+                ->orWhereHas('brands', function ($q) use ($brandIds) {
+                    $q->whereIn('brands.id', $brandIds);
+                });
+            })
+            ->distinct()
+            ->take(10)
+            ->get();
+
+        return apiResponse(true, 'Related products', ['product' => $relatedProducts], 200);
+    }
+
 }

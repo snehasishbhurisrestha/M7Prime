@@ -71,13 +71,17 @@
                     </li>
                     @endcanany
 
-                    @can('Slider Show')
+                    {{-- @can('Slider Show')
                     <li class="active"><a href="{{ route('slider.index') }}"><i class="fa fa-image"></i><span>Slider</span></a></li>
+                    @endcan --}}
+
+                    @can('Feature Panel Show')
+                    <li class="active"><a href="{{ route('feature-panel.index') }}"><i class="fa fa-image"></i><span>Feature Panel</span></a></li>
                     @endcan
 
-                    @can('Coupon Show')
+                    {{-- @can('Coupon Show')
                     <li class="active"><a href="{{ route('coupon.index') }}"><i class="fa fa-ticket"></i><span>Coupon</span></a></li>
-                    @endcan
+                    @endcan --}}
 
                     @can('Review Show')
                     <li class="active"><a href="{{ route('reviews.index') }}"><i class="fa fa-comment"></i><span>Reviews</span></a></li>

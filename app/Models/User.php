@@ -75,4 +75,9 @@ class User extends Authenticatable implements HasMedia
             'certificate_id'
         );
     }
+
+    public function recentlyViewedProducts()
+    {
+        return $this->hasMany(RecentlyViewedProduct::class);
+    }
 }

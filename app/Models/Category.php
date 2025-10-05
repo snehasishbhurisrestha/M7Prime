@@ -39,4 +39,9 @@ class Category extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('category') ?: null;
     }
+
+    public function featurePanels()
+    {
+        return $this->hasMany(FeaturePanel::class);
+    }
 }

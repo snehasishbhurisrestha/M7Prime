@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\{
     ContactUsController,
     UsersController,
     ProductReviewController,
+    FeaturePanelController,
 };
 
 use App\Http\Controllers\Site\{
@@ -186,6 +187,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::resource('slider', SliderController::class);
+        Route::resource('feature-panel', FeaturePanelController::class);
         Route::resource('testimonial', TestimonialController::class);
 
 
