@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\{
     UsersController,
     ProductReviewController,
     FeaturePanelController,
+    PageController,
 };
 
 use App\Http\Controllers\Site\{
@@ -188,6 +189,7 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('slider', SliderController::class);
         Route::resource('feature-panel', FeaturePanelController::class);
+        Route::resource('page', PageController::class);
         Route::resource('testimonial', TestimonialController::class);
 
 

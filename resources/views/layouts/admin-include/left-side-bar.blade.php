@@ -79,6 +79,10 @@
                     <li class="active"><a href="{{ route('feature-panel.index') }}"><i class="fa fa-image"></i><span>Feature Panel</span></a></li>
                     @endcan
 
+                    @can('Page Show')
+                    <li class="active"><a href="{{ route('page.index') }}"><i class="fa fa-file"></i><span>Pages</span></a></li>
+                    @endcan
+
                     {{-- @can('Coupon Show')
                     <li class="active"><a href="{{ route('coupon.index') }}"><i class="fa fa-ticket"></i><span>Coupon</span></a></li>
                     @endcan --}}

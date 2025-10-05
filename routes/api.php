@@ -15,6 +15,8 @@ use App\Http\Controllers\API\{
     LocationApiController,
     UserApiController,
     ProductReviewApiController,
+    FeaturePanelApiController,
+    PagesApiController,
 };
 
 
@@ -38,6 +40,18 @@ Route::get('/auth/google/callback', [GoogleAuthApiController::class, 'handleGoog
 
 Route::post('/register', [AuthenticationApiController::class, 'register']);
 Route::post('/login', [AuthenticationApiController::class, 'login']);
+
+Route::prefix('feature-panels')->group(function () {
+    // Fetch phone case feature panels
+    Route::get('phone-case', [FeaturePanelApiController::class, 'phoneCaseFeaturePanel']);
+
+    // Fetch wall art feature panels
+    Route::get('wall-art', [FeaturePanelApiController::class, 'wallArtFeaturePanel']);
+});
+
+// Public routes for frontend
+Route::get('/pages', [PagesApiController::class, 'index']); // list all pages
+Route::get('/pages/{slug}', [PagesApiController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
