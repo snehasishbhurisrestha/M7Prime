@@ -30,7 +30,8 @@ class ProductController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $proucts = Product::all();
+        // $proucts = Product::all();
+        $proucts = Product::with('categories')->get();
         return view('admin.products.index',compact('proucts'));
     }
 

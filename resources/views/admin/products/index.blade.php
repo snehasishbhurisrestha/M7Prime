@@ -36,6 +36,7 @@
                                     <tr>
                                         <th>Sl.no</th>
                                         <th>Title</th>
+                                        <th>Categories</th>
                                         <th>Description</th>
                                         <th>Price</th>
                                         <th>Stock</th>
@@ -54,7 +55,14 @@
                                     <tr>
                                         <td class="text-wrap">{{ $loop->iteration }}</td>
                                         <td class="text-wrap">{{ $prouct->name }}</td>
-                                        <td class="text-wrap">{!! $prouct->sort_description !!}</td>
+                                        <td>
+                                            @if($prouct->categories->count())
+                                                {{ $prouct->categories->pluck('name')->join(', ') }}
+                                            @else
+                                                <span class="text-muted">No Category</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-wrap">{!! Str::limit(strip_tags($prouct->sort_description), 100, '...') !!}</td>
                                         <td class="text-wrap">
                                             @if($prouct->product_type == 'attribute')
                                                 @foreach($prouct->variations as $pvariation)

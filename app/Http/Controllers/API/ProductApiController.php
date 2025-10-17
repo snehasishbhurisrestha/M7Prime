@@ -10,6 +10,11 @@ use App\Models\ProductReview;
 
 class ProductApiController extends Controller
 {
+    public function __construct() {
+        $this->phone_case_id = env('PHONE_CASE_ID');
+        $this->wall_art_id = env('WALL_ART_ID');
+    }
+
     // 🔹 All products with filters + pagination
     public function index(Request $request)
     {
@@ -20,6 +25,20 @@ class ProductApiController extends Controller
             $search = $request->search;
             $query->where('name', 'LIKE', "%$search%")
                   ->orWhere('slug', 'LIKE', "%$search%");
+        }
+
+        if ($request->has('type') && $request->type) {
+            $type = $request->type;
+            if($type == 'phonecase'){
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.id', $this->phone_case_id);
+                });
+            }
+            if($type == 'wallart'){
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.id', $this->wall_art_id);
+                });
+            }
         }
 
         // Filter active only
@@ -68,7 +87,7 @@ class ProductApiController extends Controller
     }
 
     // 🔹 Best selling products (based on orders count)
-    public function bestSelling()
+    public function bestSelling(Request $request)
     {
         // $products = Product::withCount('orderItems')
         //     ->orderBy('order_items_count', 'desc')
@@ -76,11 +95,31 @@ class ProductApiController extends Controller
         //     ->limit(10)
         //     ->get();
 
-        $products = Product::where('is_visible', 1)
-            ->where('is_best_selling', 1)
-            ->limit(10)
-            ->orderBy('created_at','desc')
-            ->get();
+        // $products = Product::where('is_visible', 1)
+        //     ->where('is_best_selling', 1)
+        //     ->limit(10)
+        //     ->orderBy('created_at','desc')
+        //     ->get();
+        $query = Product::with(['categories', 'brands', 'variations.options']);
+
+        if ($request->has('type') && $request->type) {
+            $type = $request->type;
+            if($type == 'phonecase'){
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.id', $this->phone_case_id);
+                });
+            }
+            if($type == 'wallart'){
+                $query->whereHas('categories', function($q) {
+                    $q->where('categories.id', $this->wall_art_id);
+                });
+            }
+        }
+        $query->where('is_visible', 1);
+        $query->where('is_best_selling', 1);
+        $query->limit(10);
+        $query->orderBy('created_at','desc');
+        $products = $query->get();
 
         return apiResponse(true, 'Best Selling Products', ['products' => $products], 200);
     }
