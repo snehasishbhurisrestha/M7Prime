@@ -44,7 +44,7 @@ class ProductApiController extends Controller
         // Filter active only
         $query->where('is_visible', 1);
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(3);
 
         return apiResponse(true, 'Products', ['products' => $products], 200);
     }

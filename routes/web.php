@@ -168,7 +168,8 @@ Route::middleware('auth')->group(function () {
                 
                 Route::get('variation-edit/{id?}','variation_edit')->name('products.variation-edit');
                 Route::post('variation-edit-process','variation_edit_process')->name('products.variation-edit-process');
-                
+                Route::post('copy-variation', [ProductController::class, 'copyVariation'])->name('products.copyVariation');
+
                 Route::get('product-images-edit/{id?}','product_images_edit')->name('products.product-images-edit');
                 Route::post('product-gallery-save','productGalleryStore')->name('products.product-gallery-save');
                 Route::post('get-product-temp-images','productTempImages')->name('products.get-product-temp-images');

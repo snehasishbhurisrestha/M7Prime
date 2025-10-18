@@ -393,6 +393,46 @@ class ProductController extends Controller implements HasMiddleware
         return response()->json(['success' => true, 'variation' => $variation]);
     }
 
+    public function copyVariation(Request $request)
+    {
+        $request->validate([
+            'variation_id' => 'required|exists:product_variations,id',
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $original = ProductVariation::with('options')->findOrFail($request->variation_id);
+
+        // ✅ Create a copy of the variation for the new product
+        $newVariation = ProductVariation::create([
+            'product_id' => $request->product_id,
+            'name' => $original->name,
+        ]);
+
+        // ✅ Clone all variation options
+        foreach ($original->options as $option) {
+            $newOption = ProductVariationOption::create([
+                'variation_id' => $newVariation->id,
+                'variation_type' => $option->variation_type,
+                'variation_name' => $option->variation_name,
+                'value' => $option->value,
+                'price' => $option->price,
+                'stock' => $option->stock,
+            ]);
+
+            // If image-based, also copy its media (if using Spatie)
+            if ($option->hasMedia('variation-option')) {
+                $media = $option->getFirstMedia('variation-option');
+                $media->copy($newOption, 'variation-option');
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Variation copied successfully!',
+            'variation' => $newVariation->load('options'),
+        ]);
+    }
+
     public function destroyVariation(string $id){
         $product = ProductVariation::findOrFail($id);
         if($product){

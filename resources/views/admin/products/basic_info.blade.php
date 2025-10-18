@@ -134,7 +134,7 @@
                                     @foreach ($brands as $brand)
                                         <!-- Only display top-level brands -->
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="brands[]" value="{{ $brand->id }}" id="brand{{ $category->id }}" {{ isset($selectedCategories) && in_array($category->id, $selectedCategories) ? 'checked' : '' }}>
+                                            <input class="form-check-input brand-checkbox" type="checkbox" name="brands[]" value="{{ $brand->id }}" id="brand{{ $category->id }}" {{ isset($selectedCategories) && in_array($category->id, $selectedCategories) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="brand{{ $brand->id }}"> {{ $brand->name }} </label>
                                         </div>
                                         @include('admin.products.subbrands', [
@@ -243,4 +243,35 @@
     </div>
 </form>
 
+@endsection
+
+@section('script')
+<script>
+    const selectAll = document.getElementById("selectAllBrands");
+    const brandCheckboxes = document.querySelectorAll(".brand-checkbox");
+
+    // Handle select all click
+    selectAll.addEventListener("change", function() {
+        let isChecked = this.checked;
+        brandCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Handle individual checkbox click
+    brandCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener("change", function() {
+            if (document.querySelectorAll(".brand-checkbox:checked").length === brandCheckboxes.length) {
+                selectAll.checked = true;   // all checked
+            } else {
+                selectAll.checked = false;  // not all checked
+            }
+        });
+    });
+
+    // Initialize state on page load
+    if (document.querySelectorAll(".brand-checkbox:checked").length === brandCheckboxes.length && brandCheckboxes.length > 0) {
+        selectAll.checked = true;
+    }
+</script>
 @endsection

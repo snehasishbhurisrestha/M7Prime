@@ -36,6 +36,19 @@
                         <div class="tab-content">
                             <div class="tab-pane active p-3" id="pricedetails" role="tabpanel">
                                 <div class="tab-pane p-3" id="variations" role="tabpanel">
+                                    <div class="mb-3">
+                                        <label for="copyVariationSelect">Use Existing Variation:</label>
+                                        <select id="copyVariationSelect" class="form-control">
+                                            <option value="">-- Select Existing Variation --</option>
+                                            @foreach(\App\Models\ProductVariation::with('product')->get() as $existing)
+                                                <option value="{{ $existing->id }}">
+                                                    {{ $existing->name }} (from {{ $existing->product->name }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button id="copyVariationBtn" class="btn btn-secondary mt-2">Apply to Current Product</button>
+                                    </div>
+
                                     <button id="createVariationBtn" class="btn btn-primary">Create Variation</button>
 
                                     <!-- Variation Form (Initially Hidden) -->
@@ -294,4 +307,43 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        $('#copyVariationBtn').on('click', function() {
+            let variationId = $('#copyVariationSelect').val();
+            let productId = "{{ $product->id }}";
+
+            if (!variationId) {
+                alert('Please select a variation to copy.');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('products.copyVariation') }}",
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    variation_id: variationId,
+                    product_id: productId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload(); // refresh to show copied variation
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error copying variation');
+                }
+            });
+        });
+    });
+
+    $('#copyVariationSelect').select2({
+        placeholder: 'Select existing variation',
+        width: '100%'
+    });
+
+</script>
+
 @endsection
