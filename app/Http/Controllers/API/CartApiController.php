@@ -85,9 +85,83 @@ class CartApiController extends Controller
             'product_id' => $request->product_id,
             'product_variation_options_id' => $request->variation_id ?? null,
             'quantity' => $request->quantity,
+            'brand_name' => $request->brand_name,
+            'model_name' => $request->model_name,
         ]);
         return apiResponse(true,$cartItem->product->name . ($variationName ? ' (' . $variationName . ')' : '') . ' added to cart successfully',null,200);
     }
+
+    public function update_cart_quantity(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'cart_id' => 'required|integer|exists:carts,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return apiResponse(false, 'Validation error', $validator->errors(), 422);
+        }
+
+        $userId = $request->user()->id;
+
+        // Get the cart item
+        $cartItem = Cart::where('id', $request->cart_id)
+                        ->where('user_id', $userId)
+                        ->with(['product', 'variation'])
+                        ->first();
+
+        if (!$cartItem) {
+            return apiResponse(false, 'Cart item not found.', null, 404);
+        }
+
+        $product = $cartItem->product;
+        $variation = $cartItem->variation;
+
+        // Determine available stock
+        $availableStock = $variation ? $variation->stock : $product->stock;
+
+        if ($request->quantity > $availableStock) {
+            return apiResponse(false, 'Only ' . $availableStock . ' left in stock.', null, 200);
+        }
+
+        // Update quantity
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        // ✅ Use variation price if available, else product total_price
+        $price = $variation 
+            ? $variation->price 
+            : $product->total_price;
+
+        // Cart item subtotal
+        $cartItemAmount = $price * $cartItem->quantity;
+
+        // ✅ Calculate total cart amount dynamically
+        $cartItems = Cart::where('user_id', $userId)
+                        ->with(['product', 'variation'])
+                        ->get();
+
+        $totalCartAmount = $cartItems->sum(function ($item) {
+            $price = $item->variation 
+                ? $item->variation->price 
+                : $item->product->total_price;
+            return $price * $item->quantity;
+        });
+
+        return apiResponse(true, 'Cart updated successfully', [
+            'cart_item' => [
+                'id' => $cartItem->id,
+                'product_name' => $product->name,
+                'variation_name' => $variation->variation_name ?? null,
+                'quantity' => $cartItem->quantity,
+                'price' => $price,
+                'cart_item_amount' => $cartItemAmount,
+            ],
+            'total_cart_amount' => $totalCartAmount,
+        ], 200);
+    }
+
+
 
     public function cart_items(Request $request)
     {
@@ -117,6 +191,8 @@ class CartApiController extends Controller
                 'product_type'   => $item->product->product_type,
                 'variation_id'   => $item->product_variation_options_id,
                 'variation_name' => $item->variation->variation_name ?? null,
+                'brand_name'     => $item->brand_name,
+                'model_name'     => $item->model_name,
                 'quantity'       => $item->quantity,
                 'price'          => $price,
                 'subtotal'       => $item->quantity * $price,
