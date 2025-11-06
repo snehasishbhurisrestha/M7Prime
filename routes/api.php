@@ -23,13 +23,13 @@ use App\Http\Controllers\API\{
 Route::post('contact-us',[ContactUsApiController::class,'store']);
 
 Route::get('/categories', [CategoryApiController::class, 'index']);
-Route::get('/categories/{id}', [CategoryApiController::class, 'show']);
+Route::get('/categories/{slug}', [CategoryApiController::class, 'show']);
 
 Route::get('/brands', [BrandApiController::class, 'index']);
 Route::get('/brands/{id}', [BrandApiController::class, 'show']);
 
 Route::get('/products', [ProductApiController::class, 'index']);
-Route::get('/products/category/{id}', [ProductApiController::class, 'byCategory']);
+Route::get('/products/category/{slug}', [ProductApiController::class, 'byCategory']);
 Route::get('/products/featured', [ProductApiController::class, 'featured']);
 Route::get('/products/special', [ProductApiController::class, 'special']);
 Route::get('/products/best-selling', [ProductApiController::class, 'bestSelling']);
@@ -55,8 +55,8 @@ Route::get('/pages/{slug}', [PagesApiController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/products/{id}', [ProductApiController::class, 'show']);
-    Route::get('/products/{id}/related', [ProductApiController::class, 'related_products']);
+    Route::get('/products/{slug}', [ProductApiController::class, 'show']);
+    Route::get('/products/{slug}/related', [ProductApiController::class, 'related_products']);
     Route::get('/recently-viewed-products', [ProductApiController::class, 'recently_viewed_products']);
 
     Route::post('/logout', [AuthenticationApiController::class, 'logout']);

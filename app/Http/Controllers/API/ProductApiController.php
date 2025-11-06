@@ -50,14 +50,14 @@ class ProductApiController extends Controller
     }
 
     // 🔹 Products by category
-    public function byCategory($categoryId)
+    public function byCategory($slug)
     {
-        $products = Product::with(['categories', 'brands'])
-            ->whereHas('categories', function ($q) use ($categoryId) {
-                $q->where('categories.id', $categoryId);
+        $products = Product::with(['categories', 'brands', 'variations.options'])
+            ->whereHas('categories', function ($q) use ($slug) {
+                $q->where('categories.slug', $slug);
             })
             ->where('is_visible', 1)
-            ->paginate(12);
+            ->paginate(6);
 
         return apiResponse(true, 'Category Products', ['products' => $products], 200);
     }
@@ -125,11 +125,19 @@ class ProductApiController extends Controller
     }
 
     // 🔹 Product details
-    public function show(Request $request, $id)
+    public function show(Request $request, $slug)
     {
         $product = Product::with(['categories', 'brands', 'variations.options', 'reviews.user', 'reviews.media'])
-            ->findOrFail($id);
+            // ->findOrFail($id);
+            ->where('slug',$slug)->first();
 
+        $categoryIds = $product->categories->pluck('id')->toArray();
+
+        if (in_array($this->phone_case_id, $categoryIds)) {
+            $product->case_type = 'phonecase';
+        } elseif (in_array($this->wall_art_id, $categoryIds)) {
+            $product->case_type = 'wallart';
+        }
         // Save recently viewed product
         if ($request->user()) {
             RecentlyViewedProduct::updateOrCreate(
@@ -187,25 +195,55 @@ class ProductApiController extends Controller
     public function recently_viewed_products(Request $request)
     {
         // Get last 10 recently viewed products for authenticated user
-        $recent = RecentlyViewedProduct::with([
-                    'product.categories',
-                    'product.brands',
-                    'product.variations.options'
-                ])
-                    ->where('user_id', $request->user()->id)
-                    ->latest('updated_at')
-                    ->take(10)
-                    ->get()
-                    ->pluck('product');
+        // $recent = RecentlyViewedProduct::with([
+        //             'product.categories',
+        //             'product.brands',
+        //             'product.variations.options'
+        //         ])
+        //             ->where('user_id', $request->user()->id)
+        //             ->latest('updated_at')
+        //             ->take(10)
+        //             ->get()
+        //             ->pluck('product');
+        
+        $query = RecentlyViewedProduct::with([
+                'product.categories',
+                'product.brands',
+                'product.variations.options'
+            ])
+            ->where('user_id', $request->user()->id)
+            ->latest('updated_at')
+            ->take(10);
+
+        // Filter by type if provided
+        if ($request->has('type') && $request->type) {
+            $type = $request->type;
+
+            if ($type === 'phonecase') {
+                $query->whereHas('product.categories', function ($q) {
+                    $q->where('categories.id', $this->phone_case_id);
+                });
+            }
+
+            if ($type === 'wallart') {
+                $query->whereHas('product.categories', function ($q) {
+                    $q->where('categories.id', $this->wall_art_id);
+                });
+            }
+        }
+
+        $recent = $query->get()->pluck('product');
+
 
         return apiResponse(true, 'Recently viewed products', ['product' => $recent], 200);
     }
 
-    public function related_products($id)
+    public function related_products($slug)
     {
         // Load the current product with its categories and brand
-        $product = Product::with(['categories', 'brands'])
-            ->findOrFail($id);
+        $product = Product::with(['categories', 'brands', 'variations.options'])
+            // ->findOrFail($id);
+            ->where('slug',$slug)->first();
 
         // Get category IDs and brand IDs
         $categoryIds = $product->categories->pluck('id')->toArray();

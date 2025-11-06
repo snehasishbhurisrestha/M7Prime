@@ -65,4 +65,9 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function offers()
+    {
+        return $this->belongsToMany(Offer::class, 'offer_product');
+    }
 }

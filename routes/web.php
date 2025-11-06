@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\{
     ProductReviewController,
     FeaturePanelController,
     PageController,
+    OfferController,
 };
 
 use App\Http\Controllers\Site\{
@@ -147,6 +148,7 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('category', CategoryController::class);
         Route::resource('brand', BrandController::class);
+        Route::resource('offers', OfferController::class);
 
         Route::controller(ProductController::class)->group( function () {
             Route::prefix('product')->group( function () {

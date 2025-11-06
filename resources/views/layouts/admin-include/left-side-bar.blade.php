@@ -79,6 +79,18 @@
                     <li class="active"><a href="{{ route('feature-panel.index') }}"><i class="fa fa-image"></i><span>Feature Panel</span></a></li>
                     @endcan
 
+
+                    {{-- Offer Menu --}}
+                    @can('Offer Show')
+                    <li class="{{ request()->routeIs('offers.*') ? 'active' : '' }}">
+                        <a href="{{ route('offers.index') }}">
+                            <i class="fa fa-gift"></i>
+                            <span>Offers</span>
+                        </a>
+                    </li>
+                    @endcan
+
+
                     @can('Page Show')
                     <li class="active"><a href="{{ route('page.index') }}"><i class="fa fa-file"></i><span>Pages</span></a></li>
                     @endcan
