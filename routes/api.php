@@ -17,10 +17,14 @@ use App\Http\Controllers\API\{
     ProductReviewApiController,
     FeaturePanelApiController,
     PagesApiController,
+    FAQApiController,
 };
 
 
 Route::post('contact-us',[ContactUsApiController::class,'store']);
+
+Route::get('get-faqs',[FAQApiController::class,'index']);
+Route::post('submit-question',[FAQApiController::class,'store']);
 
 Route::get('/categories', [CategoryApiController::class, 'index']);
 Route::get('/categories/{slug}', [CategoryApiController::class, 'show']);
