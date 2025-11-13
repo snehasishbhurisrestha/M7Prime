@@ -206,33 +206,40 @@ class ProductApiController extends Controller
         //             ->get()
         //             ->pluck('product');
         
-        $query = RecentlyViewedProduct::with([
-                'product.categories',
-                'product.brands',
-                'product.variations.options'
-            ])
-            ->where('user_id', $request->user()->id)
-            ->latest('updated_at')
-            ->take(10);
+        // $query = RecentlyViewedProduct::with([
+        //         'product.categories',
+        //         'product.brands',
+        //         'product.variations.options'
+        //     ])
+        //     ->where('user_id', $request->user()->id)
+        //     ->latest('updated_at')
+        //     ->take(10);
+
+        $product_ids = $request->product_ids;
+
+        $query = Product::with(['categories', 'brands', 'variations.options'])
+                        ->whereIn('id',$product_ids)
+                        ->take(10);
 
         // Filter by type if provided
         if ($request->has('type') && $request->type) {
             $type = $request->type;
 
             if ($type === 'phonecase') {
-                $query->whereHas('product.categories', function ($q) {
+                $query->whereHas('categories', function ($q) {
                     $q->where('categories.id', $this->phone_case_id);
                 });
             }
 
             if ($type === 'wallart') {
-                $query->whereHas('product.categories', function ($q) {
+                $query->whereHas('categories', function ($q) {
                     $q->where('categories.id', $this->wall_art_id);
                 });
             }
         }
 
-        $recent = $query->get()->pluck('product');
+        // $recent = $query->get()->pluck('product');
+        $recent = $query->get();
 
 
         return apiResponse(true, 'Recently viewed products', ['product' => $recent], 200);

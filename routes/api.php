@@ -39,6 +39,10 @@ Route::get('/products/special', [ProductApiController::class, 'special']);
 Route::get('/products/best-selling', [ProductApiController::class, 'bestSelling']);
 // Route::get('/products/{id}', [ProductApiController::class, 'show']);
 
+Route::get('/products/{slug}', [ProductApiController::class, 'show']);
+Route::get('/products/{slug}/related', [ProductApiController::class, 'related_products']);
+Route::post('/recently-viewed-products', [ProductApiController::class, 'recently_viewed_products']);
+
 Route::get('/auth/google/generate-url', [GoogleAuthApiController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleAuthApiController::class, 'handleGoogleCallback']);
 
@@ -59,9 +63,9 @@ Route::get('/pages/{slug}', [PagesApiController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/products/{slug}', [ProductApiController::class, 'show']);
-    Route::get('/products/{slug}/related', [ProductApiController::class, 'related_products']);
-    Route::get('/recently-viewed-products', [ProductApiController::class, 'recently_viewed_products']);
+    // Route::get('/products/{slug}', [ProductApiController::class, 'show']);
+    // Route::get('/products/{slug}/related', [ProductApiController::class, 'related_products']);
+    // Route::get('/recently-viewed-products', [ProductApiController::class, 'recently_viewed_products']);
 
     Route::post('/logout', [AuthenticationApiController::class, 'logout']);
 
